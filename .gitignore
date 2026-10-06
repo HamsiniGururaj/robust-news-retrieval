@@ -1,0 +1,6 @@
+data/
+indexes/
+*.npy
+*.faiss
+__pycache__/
+.ipynb_checkpoints/
