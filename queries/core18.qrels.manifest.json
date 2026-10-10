@@ -1,0 +1,83 @@
+{
+  "created_utc": "2026-10-10T12:18:36+00:00",
+  "git_commit": "b4cb659b68f0495b82fa57b8a9da22f45714e416",
+  "git_dirty": true,
+  "python": "3.13.15",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "config": {
+    "data_root": "/content/drive/MyDrive/ir-project-data",
+    "paths": {
+      "queries_dir": "queries",
+      "runs_dir": "runs",
+      "results_dir": "results"
+    },
+    "seed": 42,
+    "bm25": {
+      "k1": 0.9,
+      "b": 0.4,
+      "stemmer": "none",
+      "keep_stopwords": true,
+      "fields": "title+body",
+      "depth": 1000,
+      "threads": 8
+    },
+    "dense": {
+      "model": "intfloat/e5-base-v2",
+      "revision": null,
+      "query_prefix": "query: ",
+      "passage_prefix": "passage: ",
+      "max_length": 512,
+      "normalize": true,
+      "batch_size": 128,
+      "fp16": true,
+      "shard_size": 50000,
+      "depth": 1000
+    },
+    "rrf": {
+      "k": 60,
+      "depth": 1000
+    },
+    "eval": {
+      "measures": [
+        "nDCG@10",
+        "AP(rel=1)",
+        "R(rel=1)@100"
+      ]
+    },
+    "stats": {
+      "n_resamples": 10000,
+      "alpha": 0.05
+    },
+    "dataset": {
+      "name": "core18",
+      "docs_id": "wapo/v2",
+      "queries_id": "wapo/v2/trec-core-2018",
+      "query_fields": [
+        "title",
+        "description"
+      ]
+    }
+  },
+  "summary": {
+    "n_queries": 50,
+    "n_judgements": 26233,
+    "label_counts": {
+      "0": 22285,
+      "1": 2083,
+      "2": 1865
+    },
+    "judged_per_topic": {
+      "min": 386,
+      "median": 492.5,
+      "max": 862
+    },
+    "relevant_per_topic": {
+      "min": 5,
+      "median": 59.5,
+      "max": 327
+    },
+    "topics_without_relevant": [],
+    "queries_without_qrels": [],
+    "qrels_without_queries": []
+  }
+}

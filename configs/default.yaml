@@ -1,0 +1,49 @@
+# Shared settings for every dataset. A dataset file (configs/<name>.yaml) is
+# merged on top, then --set key.path=value overrides from the command line.
+# The fixed system settings below are preregistered (proposal §4): do not tune
+# them on Core 2018 topics.
+
+# Large files (corpus, indexes, embeddings) live here, never in git.
+# Override locally with the IR_DATA_ROOT environment variable.
+data_root: /content/drive/MyDrive/ir-project-data
+
+# Small outputs that live in the repo, relative to the repo root.
+paths:
+  queries_dir: queries
+  runs_dir: runs
+  results_dir: results
+
+seed: 42
+
+bm25:
+  k1: 0.9
+  b: 0.4
+  stemmer: none          # no stemming at index or query time
+  keep_stopwords: true   # keep "not", "no", etc.
+  fields: title+body
+  depth: 1000
+  threads: 8
+
+dense:
+  model: intfloat/e5-base-v2
+  revision: null         # pin to a commit hash before the WaPo runs; manifests record the resolved one
+  query_prefix: "query: "
+  passage_prefix: "passage: "
+  max_length: 512        # tokens, including the passage prefix and title
+  normalize: true
+  batch_size: 128
+  fp16: true
+  shard_size: 50000      # documents per saved encoding shard
+  depth: 1000
+
+rrf:
+  k: 60
+  depth: 1000
+
+eval:
+  # ir_measures names. Relevance is graded 0/1/2; AP and Recall count rel >= 1.
+  measures: ["nDCG@10", "AP(rel=1)", "R(rel=1)@100"]
+
+stats:
+  n_resamples: 10000
+  alpha: 0.05

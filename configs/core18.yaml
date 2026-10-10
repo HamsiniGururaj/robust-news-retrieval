@@ -1,0 +1,7 @@
+# TREC 2018 Common Core on the Washington Post Corpus v2 (primary benchmark).
+# Topics and qrels are public; the corpus is controlled-access and never committed.
+dataset:
+  name: core18
+  docs_id: wapo/v2
+  queries_id: wapo/v2/trec-core-2018
+  query_fields: [title, description]   # title is the original query; description is secondary

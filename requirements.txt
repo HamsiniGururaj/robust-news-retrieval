@@ -3,3 +3,5 @@ faiss-cpu
 sentence-transformers
 ir_datasets
 ir_measures
+pyyaml
+pytest

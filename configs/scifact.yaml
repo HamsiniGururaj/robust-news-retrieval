@@ -1,0 +1,6 @@
+# BEIR SciFact: pipeline smoke test only, not part of the reported results.
+dataset:
+  name: scifact
+  docs_id: beir/scifact            # ir_datasets id of the corpus
+  queries_id: beir/scifact/test    # ir_datasets id of the topics and qrels
+  query_fields: [text]

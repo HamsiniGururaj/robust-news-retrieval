@@ -1,0 +1,7 @@
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+filterwarnings = [
+    # ir_measures parses measure names with an ast API deprecated in Python 3.12+; harmless.
+    "ignore::DeprecationWarning:ir_measures.*",
+]
