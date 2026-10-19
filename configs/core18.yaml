@@ -1,7 +1,10 @@
-# TREC 2018 Common Core on the Washington Post Corpus v2 (primary benchmark).
+# TREC 2018 Common Core on the Washington Post Corpus v2. Originally the primary
+# benchmark; now used only if NIST access to the corpus arrives (docs/PROGRESS.md).
 # Topics and qrels are public; the corpus is controlled-access and never committed.
 dataset:
   name: core18
   docs_id: wapo/v2
   queries_id: wapo/v2/trec-core-2018
   query_fields: [title, description]   # title is the original query; description is secondary
+  title_field: title
+  body_field: body

@@ -58,7 +58,9 @@ def test_duplicate_query_rejected():
 
 
 def test_load_qrels(dataset):
-    assert load_qrels(dataset)["2"] == {"d1": 2, "d2": 0, "d3": 1}
+    qrels, n_negative = load_qrels(dataset)
+    assert qrels["2"] == {"d1": 2, "d2": 0, "d3": 1}
+    assert n_negative == 0
 
 
 def test_conflicting_qrels_rejected():
@@ -67,11 +69,18 @@ def test_conflicting_qrels_rejected():
 
 
 def test_repeated_identical_qrel_is_fine():
-    assert load_qrels(FakeDataset([], [Qrel("1", "d", 1, "0"), Qrel("1", "d", 1, "0")])) == {"1": {"d": 1}}
+    qrels, _ = load_qrels(FakeDataset([], [Qrel("1", "d", 1, "0"), Qrel("1", "d", 1, "0")]))
+    assert qrels == {"1": {"d": 1}}
+
+
+def test_negative_labels_stored_as_zero():
+    qrels, n_negative = load_qrels(FakeDataset([], [Qrel("1", "d", -1, "0"), Qrel("1", "e", 2, "0")]))
+    assert qrels == {"1": {"d": 0, "e": 2}}
+    assert n_negative == 1
 
 
 def test_summary_flags_problems(dataset):
-    s = summarize(load_queries(dataset, ["title"])["title"], load_qrels(dataset))
+    s = summarize(load_queries(dataset, ["title"])["title"], load_qrels(dataset)[0])
     assert s["n_queries"] == 2
     assert s["n_judgements"] == 5
     assert s["label_counts"] == {"0": 2, "1": 2, "2": 1}

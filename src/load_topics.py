@@ -32,7 +32,9 @@ from src.io_utils import (
 MIN_RELEVANT = 1
 
 # Short names used in file names, e.g. core18_desc.tsv.
-FIELD_FILE_NAMES = {"title": "title", "description": "desc", "narrative": "narr", "text": "text"}
+FIELD_FILE_NAMES = {
+    "title": "title", "description": "desc", "narrative": "narr", "text": "text", "query": "query",
+}
 
 
 def load_queries(dataset, fields: list[str]) -> dict[str, Queries]:
@@ -56,18 +58,29 @@ def load_all_topic_fields(dataset) -> list[dict]:
     return [dict(query._asdict()) for query in dataset.queries_iter()]
 
 
-def load_qrels(dataset) -> Qrels:
+def load_qrels(dataset) -> tuple[Qrels, int]:
+    """Qrels plus the number of negative labels that were mapped to 0.
+
+    A few collections carry negative labels (TREC-COVID in BEIR has two -1s).
+    They mean "not relevant", but a negative gain would distort nDCG, so they
+    are stored as 0.
+    """
     qrels: Qrels = {}
+    n_negative = 0
     for qrel in dataset.qrels_iter():
         docs = qrels.setdefault(qrel.query_id, {})
+        relevance = qrel.relevance
+        if relevance < 0:
+            n_negative += 1
+            relevance = 0
         previous = docs.get(qrel.doc_id)
-        if previous is not None and previous != qrel.relevance:
+        if previous is not None and previous != relevance:
             raise ValueError(
                 f"Conflicting judgements for qid {qrel.query_id!r}, doc {qrel.doc_id!r}: "
-                f"{previous} vs {qrel.relevance}"
+                f"{previous} vs {relevance}"
             )
-        docs[qrel.doc_id] = qrel.relevance
-    return qrels
+        docs[qrel.doc_id] = relevance
+    return qrels, n_negative
 
 
 def summarize(queries: Queries, qrels: Qrels) -> dict:
@@ -102,7 +115,7 @@ def _spread(values: list[int]) -> dict:
 def export(dataset, name: str, fields: list[str], out_dir: Path, cfg: dict | None = None) -> dict:
     """Write query files, a full-topics JSONL and qrels for one dataset. Returns the summary."""
     by_field = load_queries(dataset, fields)
-    qrels = load_qrels(dataset)
+    qrels, n_negative = load_qrels(dataset)
 
     for field, queries in by_field.items():
         write_queries(queries, out_dir / f"{name}_{FIELD_FILE_NAMES.get(field, field)}.tsv")
@@ -114,6 +127,7 @@ def export(dataset, name: str, fields: list[str], out_dir: Path, cfg: dict | Non
 
     qrels_path = write_qrels(qrels, out_dir / f"{name}.qrels")
     summary = summarize(by_field[fields[0]], qrels)
+    summary["negative_labels_mapped_to_0"] = n_negative
     write_manifest(manifest_path(qrels_path), cfg, summary=summary)
     return summary
 
@@ -123,6 +137,8 @@ def print_summary(name: str, summary: dict) -> None:
     print(f"  labels: {summary['label_counts']}")
     print(f"  judged per topic:   {summary['judged_per_topic']}")
     print(f"  relevant per topic: {summary['relevant_per_topic']}  (rel >= {MIN_RELEVANT})")
+    if summary.get("negative_labels_mapped_to_0"):
+        print(f"  note: {summary['negative_labels_mapped_to_0']} negative labels stored as 0")
     for key in ("topics_without_relevant", "queries_without_qrels", "qrels_without_queries"):
         if summary[key]:
             print(f"  WARNING {key}: {summary[key]}")

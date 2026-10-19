@@ -83,7 +83,7 @@ If you pushed new code while a Colab session is already open, run `!git pull` in
 | `docs/` | Proposal, reports, this file | Yes |
 | Google Drive `ir-project-data/` | Corpus, Lucene indexes, embeddings, FAISS indexes | **No, never** |
 
-**Never commit the Washington Post corpus.** It is controlled-access under a NIST agreement. `.gitignore` already blocks `data/`, `indexes/`, `*.npy` and `*.faiss`, but double-check `git status` before you commit.
+**Never commit corpora, indexes or embeddings.** Some collections are licensed (Signal-1M, and WaPo if it ever arrives) and must not be redistributed; the rest are simply too large. `.gitignore` already blocks `data/`, `indexes/`, `*.npy` and `*.faiss`, but double-check `git status` before you commit.
 
 Git does not track empty folders, so a folder only appears on GitHub once it contains a file.
 

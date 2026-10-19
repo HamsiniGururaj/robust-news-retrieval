@@ -1,0 +1,12 @@
+# TREC-COVID (BEIR version): primary benchmark, replacing Core 2018 / WaPo v2,
+# which could not be obtained in time (see docs/PROGRESS.md).
+# 50 NIST topics, 171,332 CORD-19 documents (title + abstract), graded qrels 0/1/2.
+dataset:
+  name: trec_covid
+  docs_id: beir/trec-covid
+  queries_id: beir/trec-covid
+  # query = short keyword query (the original query, like a Core title)
+  # text  = the question form (secondary); narrative is kept in the topics JSONL
+  query_fields: [query, text]
+  title_field: title
+  body_field: text   # the abstract; ~25% of documents have none (title only)

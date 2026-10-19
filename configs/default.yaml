@@ -42,7 +42,10 @@ rrf:
 
 eval:
   # ir_measures names. Relevance is graded 0/1/2; AP and Recall count rel >= 1.
-  measures: ["nDCG@10", "AP(rel=1)", "R(rel=1)@100"]
+  # Judged@10 is a diagnostic, not a quality metric: the share of the top 10 that
+  # has any judgement. Low values mean scores are underestimated by unjudged docs,
+  # which tends to hit dense retrieval on pools built from older (lexical) runs.
+  measures: ["nDCG@10", "AP(rel=1)", "R(rel=1)@100", "Judged@10"]
 
 stats:
   n_resamples: 10000

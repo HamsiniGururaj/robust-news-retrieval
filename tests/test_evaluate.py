@@ -70,6 +70,13 @@ def test_mean_includes_the_zero_topic(scores):
     assert means["R(rel=1)@100"] == pytest.approx((RECALL_1 + 1 + 0) / 3)
 
 
+def test_judged_at_10():
+    scores, _ = evaluate_run(RUN, QRELS, ["Judged@10"])
+    assert scores["1"]["Judged@10"] == pytest.approx(3 / 3)  # d3, d1, d2 all judged
+    assert scores["2"]["Judged@10"] == pytest.approx(1 / 2)  # d5 judged, d0 not
+    assert scores["3"]["Judged@10"] == 0.0                   # nothing retrieved
+
+
 def test_per_topic_csv_round_trip(scores, tmp_path):
     path = write_per_topic(scores, "toy", tmp_path / "toy.csv")
     assert path.read_text(encoding="utf-8").splitlines()[0] == "run,qid,measure,value"

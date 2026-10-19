@@ -4,3 +4,5 @@ dataset:
   docs_id: beir/scifact            # ir_datasets id of the corpus
   queries_id: beir/scifact/test    # ir_datasets id of the topics and qrels
   query_fields: [text]
+  title_field: title
+  body_field: text
