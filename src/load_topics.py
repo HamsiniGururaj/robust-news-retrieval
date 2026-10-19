@@ -37,6 +37,21 @@ FIELD_FILE_NAMES = {
 }
 
 
+def query_file_path(cfg: dict, field: str) -> Path:
+    name = cfg["dataset"]["name"]
+    return repo_dir(cfg, "queries_dir") / f"{name}_{FIELD_FILE_NAMES.get(field, field)}.tsv"
+
+
+def default_queries_path(cfg: dict) -> Path:
+    """The original queries: the dataset's first query field."""
+    return query_file_path(cfg, cfg["dataset"]["query_fields"][0])
+
+
+def query_set_name(queries_path: Path, dataset_name: str) -> str:
+    """queries/trec_covid_query.tsv -> "query"; used in run names like bm25_query."""
+    return Path(queries_path).stem.removeprefix(f"{dataset_name}_")
+
+
 def load_queries(dataset, fields: list[str]) -> dict[str, Queries]:
     """{field: {qid: text}} for each requested field of the dataset's topics."""
     available = dataset.queries_cls()._fields
@@ -118,7 +133,7 @@ def export(dataset, name: str, fields: list[str], out_dir: Path, cfg: dict | Non
     qrels, n_negative = load_qrels(dataset)
 
     for field, queries in by_field.items():
-        write_queries(queries, out_dir / f"{name}_{FIELD_FILE_NAMES.get(field, field)}.tsv")
+        write_queries(queries, out_dir / f"{name}_{FIELD_FILE_NAMES.get(field, field)}.tsv")  # same naming as query_file_path
 
     topics_path = ensure_parent(out_dir / f"{name}_topics.jsonl")
     with open(topics_path, "w", encoding="utf-8", newline="\n") as f:

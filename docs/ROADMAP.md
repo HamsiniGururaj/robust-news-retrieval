@@ -53,9 +53,9 @@ How we build the code for *Robust Retrieval Under Vocabulary Mismatch*, step by 
 | A1 | **Topics and qrels** for TREC-COVID, SciFact (and Core 2018) | `src/load_topics.py` | `queries/trec_covid_query.tsv` etc. written | ✅ |
 | A2 | **Evaluation**: nDCG@10, MAP, Recall@100, Judged@10 per topic and mean; topics missing from a run score 0 | `src/evaluate.py` | Test on a made-up run matches scores worked out by hand | ✅ |
 | A3 | **Corpus prep**: documents → JSONL (id, title, body, contents) | `src/prepare_corpus.py` | SciFact and TREC-COVID JSONL in Drive | ✅ code; tested on TREC-COVID locally |
-| A4 | **BM25**: Pyserini index and search; no stemming or stopword removal at index *and* query time; k1=0.9, b=0.4; top 1000 | `src/bm25.py` | BM25 runs evaluated | ✅ code; Colab run pending |
-| A5 | **Dense**: E5-base-v2 (`passage: ` / `query: ` prefixes, max length 512, L2-normalized), sharded and resumable encoding saved to Drive, FAISS `IndexFlatIP` search | `src/dense_encode.py`, `src/dense_search.py` | Dense runs evaluated; an interrupted encode resumes | |
-| A6 | **RRF**: k=60 over the top 1000 of each run; ties broken by doc id | `src/fuse.py` | Fusion test passes; hybrid run evaluated | |
+| A4 | **BM25**: Pyserini index and search; no stemming or stopword removal at index *and* query time; k1=0.9, b=0.4; top 1000 | `src/bm25.py` | BM25 runs evaluated | ✅ SciFact 0.665, TREC-COVID 0.639 nDCG@10 |
+| A5 | **Dense**: E5-base-v2 (`passage: ` / `query: ` prefixes, max length 512, L2-normalized), sharded and resumable encoding saved to Drive, FAISS `IndexFlatIP` search | `src/dense_encode.py`, `src/dense_search.py` | Dense runs evaluated; an interrupted encode resumes | ✅ code; Colab run pending |
+| A6 | **RRF**: k=60 over the top 1000 of each run; ties broken by doc id | `src/fuse.py` | Fusion test passes; hybrid run evaluated | ✅ code; Colab run pending |
 | A7 | **End-to-end runs**: SciFact smoke test, then TREC-COVID (RQ1); index size, encoding time, query latency recorded | `notebooks/01_pipeline.ipynb` | SciFact near published BEIR figures; TREC-COVID RQ1 table | |
 | A8 | **Statistics**: paired bootstrap, paired randomization test, 95% CIs, Holm correction, effect sizes | `src/stats.py` | Tests on synthetic data with known answers pass | |
 

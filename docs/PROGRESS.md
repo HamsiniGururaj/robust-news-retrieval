@@ -82,7 +82,7 @@ All code takes the dataset from a config file (`configs/core18.yaml` already exi
 | `requirements.txt`, `requirements-lock.txt` | Dependencies; exact versions from the working Colab environment |
 | `docs/WORKFLOW.md` | How the team writes (VS Code), stores (GitHub) and runs (Colab + Drive) code |
 | `docs/ROADMAP.md` | Step-by-step implementation plan |
-| `pyproject.toml`, `tests/` | Local test suite (pytest); 57 tests passing |
+| `pyproject.toml`, `tests/` | Local test suite (pytest); 69 tests passing |
 
 ### 3.2 Code modules
 
@@ -93,7 +93,9 @@ All code takes the dataset from a config file (`configs/core18.yaml` already exi
 | A1 | `src/load_topics.py` | Exports topics and qrels from `ir_datasets` into `queries/` (one file per query field, a full-topic JSONL with narratives for rewriters, qrels), with a data health check | Done, tested; run on Core 2018, SciFact, TREC-COVID |
 | A2 | `src/evaluate.py` | nDCG@10, MAP, Recall@100 and Judged@10 per topic and mean via `ir_measures` (pytrec_eval backend); topics missing from a run score 0 | Done, tested against hand-computed scores |
 | A3 | `src/prepare_corpus.py` | Documents → one JSONL (`id`, `title`, `body`, `contents`) shared by BM25 and dense; skips empty docs and repeated ids; atomic write; length statistics | Done, tested; run locally on TREC-COVID (171,331 docs, 13.5 s) |
-| A4 | `src/bm25.py` | Pyserini/Lucene index over title + body with no stemming and stopwords kept (verified automatically after indexing); BM25 k1=0.9, b=0.4 with matching query analysis; top 1000; per-query latency, index size and build time recorded | Code done and tested locally; first Colab run pending (`notebooks/01_pipeline.ipynb`) |
+| A4 | `src/bm25.py` | Pyserini/Lucene index over title + body with no stemming and stopwords kept (verified automatically after indexing); BM25 k1=0.9, b=0.4 with matching query analysis; top 1000; per-query latency, index size and build time recorded | Done; run in Colab on SciFact and TREC-COVID (results in §3.5) |
+| A5 | `src/dense_encode.py`, `src/dense_search.py` | E5-base-v2 encoding of `passage: ` + title + body (512 tokens, fp16 on GPU, L2-normalized) in 50k-document shards saved to Drive and resumable after a disconnect; exact FAISS IndexFlatIP search with `query: ` prefix; latency, memory, encoding time and model commit recorded | Code done, tested locally with a fake encoder; first Colab run pending |
+| A6 | `src/fuse.py` | Reciprocal rank fusion (k=60, top 1000 of each run) | Code done, tested against hand-computed scores; first Colab run pending |
 
 ### 3.3 Corpus facts (TREC-COVID, from `prepare_corpus`)
 - 171,331 documents kept (1 empty document dropped); 42,139 (25%) are title-only.
@@ -108,13 +110,26 @@ All code takes the dataset from a config file (`configs/core18.yaml` already exi
 
 ---
 
+### 3.5 Preliminary results: BM25 (Colab, 19 Oct 2026)
+
+| Dataset | Queries | nDCG@10 | MAP | Recall@100 | Judged@10 |
+|---|---|---|---|---|---|
+| SciFact (smoke test) | claims | 0.665 | 0.627 | 0.885 | 0.086* |
+| TREC-COVID | keyword `query` (original) | **0.639** | 0.203 | 0.114 | 0.958 |
+| TREC-COVID | question `text` | 0.584 | 0.155 | 0.097 | 0.932 |
+
+\* SciFact qrels list only relevant documents, so Judged@10 is not meaningful there.
+
+- **Sanity checks pass.** SciFact matches published BM25 (~0.665–0.68). On TREC-COVID, BEIR's standard setting uses the question form, where published flat BM25 is ~0.59; ours is 0.584 (no stemming, by design).
+- **Keyword queries beat questions by 0.055 nDCG@10** for BM25: question words dilute the matching. A first, informal sign of how much BM25 depends on wording.
+- **Low MAP and Recall@100 are expected:** topics have a median of 478 relevant documents, so the top 100 can only hold a fraction of them. nDCG@10 is the primary metric.
+- **Index:** the self-check confirmed no stemming and stopwords kept. 321 MB, 244k unique terms, built in 45 s. Latency (~115 ms/query in this first run) was inflated by reading the index over the Drive mount; it is now measured on a local copy after a warm-up query.
+
 ## 4. Pending work
 See `docs/ROADMAP.md` for the full plan.
 
 | Step | Component | Notes |
 |---|---|---|
-| A5 | Dense (`dense_encode.py`, `dense_search.py`) | Sharded, resumable E5 encoding; FAISS IndexFlatIP |
-| A6 | RRF (`fuse.py`) | k=60, top 1000 |
 | A7 | End-to-end runs | SciFact, then TREC-COVID; efficiency (index size, encoding time, latency) recorded in manifests |
 | A8 | Significance tests (`stats.py`) | Paired bootstrap / randomization, Holm |
 | A9 | NevIR (RQ4) | BM25, E5, cross-encoder reference |

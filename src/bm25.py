@@ -32,6 +32,7 @@ from pathlib import Path
 
 from src.config import add_config_args, config_from_args, data_dir, repo_dir
 from src.io_utils import Run, manifest_path, read_queries, write_manifest, write_run
+from src.load_topics import default_queries_path, query_set_name
 
 # A word Lucene's English stopword list would remove, and a word whose Porter stem
 # ("studi") differs from itself. If stemming/stopword removal were (wrongly) on,
@@ -48,19 +49,6 @@ def index_dir(cfg: dict) -> Path:
 
 def index_manifest_path(cfg: dict) -> Path:
     return data_dir(cfg, "bm25_index.manifest.json")
-
-
-def query_set_name(queries_path: Path, dataset_name: str) -> str:
-    """queries/trec_covid_query.tsv -> "query"; used in run names like bm25_query."""
-    return queries_path.stem.removeprefix(f"{dataset_name}_")
-
-
-def default_queries_path(cfg: dict) -> Path:
-    """The original queries: the dataset's first query field."""
-    ds = cfg["dataset"]
-    from src.load_topics import FIELD_FILE_NAMES
-    field = ds["query_fields"][0]
-    return repo_dir(cfg, "queries_dir") / f"{ds['name']}_{FIELD_FILE_NAMES.get(field, field)}.tsv"
 
 
 def dir_size_mb(path: Path) -> float:
@@ -171,7 +159,12 @@ def make_searcher(path: Path, bm25_cfg: dict):
 
 
 def search_queries(searcher, queries: dict[str, str], depth: int) -> tuple[Run, list[float]]:
-    """Search one query at a time so each query's latency can be measured."""
+    """Search one query at a time so each query's latency can be measured.
+
+    One untimed warm-up query runs first, so Java start-up costs don't count as latency.
+    """
+    if queries:
+        searcher.search(next(iter(queries.values())), k=depth)
     results, latencies_ms = {}, []
     for qid, text in queries.items():
         start = time.perf_counter()
@@ -194,9 +187,13 @@ def run_search(cfg: dict, queries_path: Path | None = None) -> Path:
     name = cfg["dataset"]["name"]
     queries_path = queries_path or default_queries_path(cfg)
     queries = read_queries(queries_path)
-    searcher = make_searcher(index_dir(cfg), cfg["bm25"])
 
-    run, latencies = search_queries(searcher, queries, cfg["bm25"]["depth"])
+    # Search a local copy: reading the index over the Drive mount would inflate latency.
+    with tempfile.TemporaryDirectory(prefix="bm25_search_") as tmp:
+        local_index = shutil.copytree(index_dir(cfg), Path(tmp) / "index")
+        searcher = make_searcher(local_index, cfg["bm25"])
+        run, latencies = search_queries(searcher, queries, cfg["bm25"]["depth"])
+        getattr(searcher, "close", lambda: None)()  # release index files before the temp dir is removed
     run_tag = f"bm25_{query_set_name(queries_path, name)}"
     out = write_run(run, repo_dir(cfg, "runs_dir") / name / f"{run_tag}.run", tag=run_tag, depth=cfg["bm25"]["depth"])
 
