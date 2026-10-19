@@ -1,0 +1,82 @@
+{
+  "created_utc": "2026-10-19T17:12:31+00:00",
+  "git_commit": "3b33b87a5c32651f631b83ac49c912d8d72960d4",
+  "git_dirty": true,
+  "python": "3.13.15",
+  "platform": "Linux-6.6.122+-x86_64-with-glibc2.39",
+  "config": {
+    "data_root": "/content/drive/MyDrive/ir-project-data",
+    "paths": {
+      "queries_dir": "queries",
+      "runs_dir": "runs",
+      "results_dir": "results"
+    },
+    "seed": 42,
+    "bm25": {
+      "k1": 0.9,
+      "b": 0.4,
+      "stemmer": "none",
+      "keep_stopwords": true,
+      "fields": "title+body",
+      "depth": 1000,
+      "threads": 8
+    },
+    "dense": {
+      "model": "intfloat/e5-base-v2",
+      "revision": null,
+      "query_prefix": "query: ",
+      "passage_prefix": "passage: ",
+      "max_length": 512,
+      "normalize": true,
+      "batch_size": 128,
+      "fp16": true,
+      "shard_size": 50000,
+      "depth": 1000
+    },
+    "rrf": {
+      "k": 60,
+      "depth": 1000
+    },
+    "eval": {
+      "measures": [
+        "nDCG@10",
+        "AP(rel=1)",
+        "R(rel=1)@100",
+        "Judged@10"
+      ]
+    },
+    "stats": {
+      "n_resamples": 10000,
+      "alpha": 0.05
+    },
+    "dataset": {
+      "name": "trec_covid",
+      "docs_id": "beir/trec-covid",
+      "queries_id": "beir/trec-covid",
+      "query_fields": [
+        "query",
+        "text"
+      ],
+      "title_field": "title",
+      "body_field": "text"
+    }
+  },
+  "system": "bm25",
+  "queries_file": "queries/trec_covid_text.tsv",
+  "latency": {
+    "n_queries": 50,
+    "mean_ms": 102.64,
+    "median_ms": 90.68,
+    "p95_ms": 210.02
+  },
+  "index": {
+    "index_seconds": 45.1,
+    "index_size_mb": 321.2,
+    "index_stats": {
+      "total_terms": 28720002,
+      "documents": 171331,
+      "non_empty_documents": 171331,
+      "unique_terms": 244432
+    }
+  }
+}
