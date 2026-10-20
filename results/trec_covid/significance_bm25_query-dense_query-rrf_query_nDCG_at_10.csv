@@ -1,0 +1,4 @@
+run_a,run_b,measure,n_topics,mean_a,mean_b,mean_diff,ci_low,ci_high,p_value,p_holm,wins,ties,losses
+bm25_query,dense_query,nDCG@10,50,0.638945,0.562726,0.076219,0.000545,0.151680,0.055294,0.055294,27,2,21
+bm25_query,rrf_query,nDCG@10,50,0.638945,0.731212,-0.092267,-0.142026,-0.046116,0.000400,0.000800,13,4,33
+dense_query,rrf_query,nDCG@10,50,0.562726,0.731212,-0.168486,-0.232467,-0.108080,0.000100,0.000300,10,3,37

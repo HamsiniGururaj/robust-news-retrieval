@@ -194,9 +194,15 @@ def main(argv: list[str] | None = None) -> None:
     write_manifest(
         encode_manifest_path(cfg), cfg, **progress, **stats, device=device,
         gpu=_gpu_name(), model_revision=resolved_revision(dense["model"], dense.get("revision")),
-        embedding_dim=model.get_sentence_embedding_dimension(),
+        embedding_dim=_embedding_dim(model),
     )
     print(json.dumps({**progress, **stats}, indent=2))
+
+
+def _embedding_dim(model) -> int:
+    # renamed in sentence-transformers 5.x; keep working on older versions too
+    getter = getattr(model, "get_embedding_dimension", None) or model.get_sentence_embedding_dimension
+    return getter()
 
 
 def _gpu_name() -> str | None:

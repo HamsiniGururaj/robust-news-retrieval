@@ -49,6 +49,5 @@ Heavy steps (indexing, dense encoding) run in Google Colab via `notebooks/01_pip
 ## Documentation
 - [docs/proposal.pdf](docs/proposal.pdf): original proposal
 - [docs/PROGRESS.md](docs/PROGRESS.md): what's built, dataset change and decisions
-- [docs/CODE_GUIDE.md](docs/CODE_GUIDE.md): plain-language explanation of every module
 - [docs/ROADMAP.md](docs/ROADMAP.md): implementation plan
 - [docs/WORKFLOW.md](docs/WORKFLOW.md): VS Code → GitHub → Colab workflow
