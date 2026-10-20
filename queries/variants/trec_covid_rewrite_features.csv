@@ -1,0 +1,101 @@
+qid,variant,original,rewrite,phenomenon,verified,n_words,length_change,content_overlap,anchor,anchor_removed,max_idf,mean_idf,n_numbers,n_acronyms,n_capitalized
+1,a,coronavirus origin,beginning of covid-19,paraphrase,True,3,1,0.0,origin,True,4.809,2.305,0,0,0
+2,a,coronavirus response to weather changes,coronavirus under different climate conditions,paraphrase,True,5,0,0.125,weather,True,5.265,3.029,0,0,0
+3,a,coronavirus immunity,body's defenses against coronavirus,paraphrase,True,4,2,0.2,immunity,True,6.655,3.455,0,0,0
+4,a,how do people die from the coronavirus,what kills people with covid-19,paraphrase,True,5,-2,0.0,die,True,8.149,3.419,0,0,0
+5,a,animal models of COVID-19,"covid-19 infection in mice, hamsters and monkeys",deanchoring,True,7,3,0.25,animal,True,7.227,3.557,0,0,0
+6,a,coronavirus test rapid testing,quick covid-19 diagnosis methods,paraphrase,True,4,0,0.0,testing,True,5.627,2.419,0,0,0
+7,a,serological tests for coronavirus,covid-19 antibody tests,alias,True,3,-1,0.167,serological,True,3.492,2.264,0,0,0
+8,a,coronavirus under reporting,missed or unrecorded covid-19 cases,paraphrase,True,5,2,0.0,reporting,True,9.8,4.036,0,0,0
+9,a,coronavirus in Canada,covid-19 among canadians,paraphrase,True,3,0,0.0,canada,True,8.091,3.123,0,0,0
+10,a,coronavirus social distancing impact,staying apart and covid-19 spread,paraphrase,True,5,1,0.0,distancing,True,6.736,3.439,0,0,0
+11,a,coronavirus hospital rationing,covid-19 patient hospital resource allocation rules,paraphrase,True,6,3,0.111,rationing,True,5.686,3.193,0,0,0
+12,a,coronavirus quarantine,isolating people exposed to covid-19,paraphrase,True,5,3,0.0,quarantine,True,6.577,3.226,0,0,0
+13,a,how does coronavirus spread,how do people catch coronavirus,paraphrase,True,5,1,0.333,spread,True,7.676,4.63,0,0,0
+14,a,coronavirus super spreaders,people who spread covid-19 to many,paraphrase,True,6,3,0.0,spreaders,True,2.688,1.841,0,0,0
+15,a,coronavirus outside body,coronavirus survival in the environment,paraphrase,True,5,2,0.2,outside,True,3.878,3.091,0,0,0
+16,a,how long does coronavirus survive on surfaces,how long can covid-19 last on objects we touch,paraphrase,True,9,2,0.1,survive,True,6.872,3.335,0,0,0
+17,a,coronavirus clinical trials,covid-19 interventional studies,alias,True,3,0,0.0,trials,True,5.382,2.414,0,0,0
+18,a,masks prevent coronavirus,face coverings stop coronavirus,paraphrase,True,4,1,0.167,masks,True,8.256,4.847,0,0,0
+19,a,what alcohol sanitizer kills coronavirus,what alcohol hand gel destroys coronavirus,paraphrase,True,6,1,0.286,kills,True,9.311,5.237,0,0,0
+20,a,coronavirus and ACE inhibitors,angiotensin-converting enzyme inhibitors and covid-19,alias,True,5,1,0.125,ace,True,4.521,3.109,0,0,0
+21,a,coronavirus mortality,covid-19 death rates,paraphrase,True,3,1,0.0,mortality,True,3.277,2.108,0,0,0
+22,a,coronavirus heart impacts,covid-19 heart problems,paraphrase,True,3,0,0.167,impacts,True,4.062,2.556,0,0,0
+23,a,coronavirus hypertension,covid-19 and high blood pressure,alias,True,5,3,0.0,hypertension,True,3.795,2.156,0,0,0
+24,a,coronavirus diabetes,covid-19 outcomes in diabetic patients,paraphrase,True,5,3,0.0,diabetes,True,5.84,2.385,0,0,0
+25,a,coronavirus biomarkers,lab markers predicting covid-19 outcome,paraphrase,True,5,3,0.0,biomarkers,True,5.808,3.377,0,0,0
+26,a,coronavirus early symptoms,first signs of covid-19,paraphrase,True,4,1,0.0,symptoms,True,3.957,2.061,0,0,0
+27,a,coronavirus asymptomatic,symptom-free covid-19 infections,paraphrase,True,3,1,0.0,asymptomatic,True,4.203,2.488,0,0,0
+28,a,coronavirus hydroxychloroquine,hcq for covid-19,alias,True,3,1,0.0,hydroxychloroquine,True,6.54,2.882,0,0,0
+29,a,coronavirus drug repurposing,reusing existing drugs for covid-19,paraphrase,True,5,2,0.0,repurposing,True,8.57,3.558,0,0,0
+30,a,coronavirus remdesivir,veklury for covid-19,alias,True,3,1,0.0,remdesivir,True,12.745,4.95,0,0,0
+31,a,difference between coronavirus and flu,coronavirus vs seasonal influenza,alias,True,4,-1,0.167,flu,True,4.801,3.198,0,0,0
+32,a,coronavirus subtypes,coronavirus strains,paraphrase,True,2,0,0.333,subtypes,True,3.626,2.605,0,0,0
+33,a,coronavirus vaccine candidates,specific covid-19 vaccines under testing,paraphrase,True,5,2,0.0,candidates,True,3.546,2.345,0,0,0
+34,a,coronavirus recovery,health after battling covid-19,paraphrase,True,4,2,0.0,recovery,True,8.035,2.979,0,0,0
+35,a,coronavirus public datasets,new open covid-19 data releases,paraphrase,True,5,2,0.0,datasets,True,7.243,2.791,0,0,0
+36,a,SARS-CoV-2 spike structure,sars-cov-2 s protein structure,alias,True,4,1,0.571,spike,True,3.468,2.183,0,0,0
+37,a,SARS-CoV-2 phylogenetic analysis,sars-cov-2 family tree studies,paraphrase,True,4,1,0.375,phylogenetic,True,5.444,2.735,0,0,0
+38,a,COVID inflammatory response,inflammation due to covid,paraphrase,True,4,1,0.2,inflammatory,True,3.868,2.5,0,0,0
+39,a,COVID-19 cytokine storm,covid-19 cytokine release syndrome,alias,True,4,1,0.5,storm,True,4.35,2.57,0,0,0
+40,a,coronavirus mutations,coronavirus genetic changes,paraphrase,True,3,1,0.25,mutations,True,3.593,2.706,0,0,0
+41,a,COVID-19 in African-Americans,covid-19 in black us residents,alias,True,5,2,0.286,americans,True,5.64,3.247,0,0,0
+42,a,Vitamin D and COVID-19,calciferol and covid-19,alias,True,3,-1,0.4,vitamin,True,12.745,4.95,0,0,0
+43,a,violence during pandemic,abuse and violent crime during pandemic,paraphrase,True,6,3,0.2,violence,True,8.326,6.166,0,0,0
+44,a,impact of masks on coronavirus transmission,effectiveness of face coverings against coronavirus spread,paraphrase,True,7,1,0.125,masks,True,8.256,4.065,0,0,0
+45,a,coronavirus mental health impact,covid-19 effects on psychological wellbeing,paraphrase,True,5,1,0.0,mental,True,6.316,3.101,0,0,0
+46,a,dexamethasone coronavirus,decadron for covid-19,alias,True,3,1,0.0,dexamethasone,True,11.646,4.584,0,0,0
+47,a,COVID-19 outcomes in children,covid-19 outcomes in kids,alias,True,4,0,0.6,children,True,8.17,3.236,0,0,0
+48,a,school reopening coronavirus,back to school during covid-19,paraphrase,True,5,2,0.167,reopening,True,5.0,3.023,0,0,0
+49,a,post-infection COVID-19 immunity,protection against covid-19 reinfection after recovery,paraphrase,True,6,3,0.25,immunity,True,7.037,3.349,0,0,0
+50,a,mRNA vaccine coronavirus,messenger rna covid-19 vaccines,alias,True,4,1,0.0,mrna,True,6.466,3.014,0,0,0
+1,b,coronavirus origin,covid-19 emergence,deanchoring,True,2,0,0.0,origin,True,3.984,2.03,0,0,0
+2,b,coronavirus response to weather changes,temperature and humidity effects on covid-19,deanchoring,True,6,1,0.0,weather,True,5.881,2.98,0,0,0
+3,b,coronavirus immunity,resistance built up after coronavirus infection,deanchoring,True,6,4,0.167,immunity,True,5.404,3.047,0,0,0
+4,b,how do people die from the coronavirus,how does covid-19 cause death,deanchoring,True,5,-2,0.0,die,True,3.277,2.08,0,0,0
+5,b,animal models of COVID-19,covid-19 studies in laboratory animals,paraphrase,True,5,1,0.286,animal,True,3.532,2.201,0,0,0
+6,b,coronavirus test rapid testing,fast ways to detect coronavirus,deanchoring,True,5,1,0.143,testing,True,4.611,3.658,0,0,0
+7,b,serological tests for coronavirus,blood tests showing past covid-19 infection,deanchoring,True,6,2,0.111,serological,True,4.646,2.678,0,0,0
+8,b,coronavirus under reporting,undercounting of coronavirus cases,deanchoring,True,4,1,0.2,reporting,True,10.547,4.742,0,0,0
+9,b,coronavirus in Canada,canadian coronavirus situation,deanchoring,True,3,0,0.25,canada,True,5.744,3.799,0,0,0
+10,b,coronavirus social distancing impact,effect of less close contact on coronavirus,deanchoring,True,7,3,0.125,distancing,True,4.065,2.991,0,0,0
+11,b,coronavirus hospital rationing,prioritising covid-19 patients for scarce care,deanchoring,True,6,3,0.0,rationing,True,8.091,3.189,0,0,0
+12,b,coronavirus quarantine,coronavirus isolation period and practices,deanchoring,True,5,3,0.2,quarantine,True,4.115,3.067,0,0,0
+13,b,how does coronavirus spread,how is covid-19 passed on,deanchoring,True,5,1,0.0,spread,True,6.086,2.731,0,0,0
+14,b,coronavirus super spreaders,single cases causing big covid-19 outbreaks,deanchoring,True,6,3,0.0,spreaders,True,5.687,2.88,0,0,0
+15,b,coronavirus outside body,coronavirus lifespan beyond the human body,deanchoring,True,6,3,0.333,outside,True,7.513,3.851,0,0,0
+16,b,how long does coronavirus survive on surfaces,how long does sars-cov-2 stay on everyday things,deanchoring,True,8,1,0.1,survive,True,6.56,3.576,0,0,0
+17,b,coronavirus clinical trials,covid-19 studies testing treatments in humans,paraphrase,True,6,3,0.0,trials,True,3.847,2.462,0,0,0
+18,b,masks prevent coronavirus,face protection against covid-19 infection,deanchoring,True,5,2,0.0,masks,True,4.019,2.27,0,0,0
+19,b,what alcohol sanitizer kills coronavirus,what sanitizer strength wipes out covid-19,deanchoring,True,6,1,0.111,kills,True,9.031,4.545,0,0,0
+20,b,coronavirus and ACE inhibitors,lisinopril-type drugs and covid-19,entity_description,True,4,0,0.0,ace,True,10.547,3.78,0,0,0
+21,b,coronavirus mortality,covid-19 deadliness,deanchoring,True,2,0,0.0,mortality,True,10.799,4.302,0,0,0
+22,b,coronavirus heart impacts,cardiac damage from covid-19,deanchoring,True,4,1,0.0,impacts,True,4.11,2.569,0,0,0
+23,b,coronavirus hypertension,raised blood pressure and coronavirus,paraphrase,True,5,3,0.2,hypertension,True,5.008,3.337,0,0,0
+24,b,coronavirus diabetes,coronavirus and diabetes mellitus,alias,True,4,2,0.667,diabetes,False,5.398,3.702,0,0,0
+25,b,coronavirus biomarkers,blood signs of severe covid-19,deanchoring,True,5,3,0.0,biomarkers,True,3.957,2.198,0,0,0
+26,b,coronavirus early symptoms,first noticeable things in patients with covid-19,deanchoring,True,7,4,0.0,symptoms,True,7.195,3.208,0,0,0
+27,b,coronavirus asymptomatic,silent coronavirus carriers,deanchoring,True,3,1,0.25,asymptomatic,True,6.669,4.624,0,0,0
+28,b,coronavirus hydroxychloroquine,lupus and malaria pill for covid-19,entity_description,True,6,4,0.0,hydroxychloroquine,True,8.667,4.54,0,0,0
+29,b,coronavirus drug repurposing,drug repositioning for coronavirus,alias,True,4,1,0.5,repurposing,True,6.839,3.9,0,0,0
+30,b,coronavirus remdesivir,gilead's ebola drug for covid-19,entity_description,True,5,3,0.0,remdesivir,True,8.701,3.454,0,0,0
+31,b,difference between coronavirus and flu,comparing covid-19 and seasonal flu,paraphrase,True,5,0,0.143,flu,False,5.046,3.261,0,0,0
+32,b,coronavirus subtypes,sars-cov-2 lineages and clades,deanchoring,True,4,2,0.0,subtypes,True,6.711,3.566,0,0,0
+33,b,coronavirus vaccine candidates,named covid-19 vaccines in development,deanchoring,True,5,2,0.0,candidates,True,4.875,2.601,0,0,0
+34,b,coronavirus recovery,later health of covid-19 survivors,deanchoring,True,5,3,0.0,recovery,True,5.369,2.689,0,0,0
+35,b,coronavirus public datasets,freely shared coronavirus data collections,deanchoring,True,5,2,0.143,datasets,True,6.751,4.265,0,0,0
+36,b,SARS-CoV-2 spike structure,shape of sars-cov-2's cell-entry protein,entity_description,True,5,2,0.3,spike,True,5.331,2.665,0,0,0
+37,b,SARS-CoV-2 phylogenetic analysis,evolutionary tree of coronavirus genomes,deanchoring,True,5,2,0.0,phylogenetic,True,5.444,4.082,0,0,0
+38,b,COVID inflammatory response,covid inflammation and disease process,deanchoring,True,5,2,0.167,inflammatory,True,3.868,2.4,0,0,0
+39,b,COVID-19 cytokine storm,covid-19 immune overreaction,paraphrase,True,3,0,0.333,storm,True,9.311,3.571,0,0,0
+40,b,coronavirus mutations,sars-cov-2 genome variation,deanchoring,True,3,1,0.0,mutations,True,4.292,2.589,0,0,0
+41,b,COVID-19 in African-Americans,black us communities and covid-19,paraphrase,True,5,2,0.286,americans,True,5.64,3.196,0,0,0
+42,b,Vitamin D and COVID-19,nutrient made from sunlight and covid-19,entity_description,True,6,2,0.286,vitamin,True,8.129,4.12,0,0,0
+43,b,violence during pandemic,violence in the covid-19 era,temporal,True,5,2,0.2,violence,False,6.422,3.23,0,0,0
+44,b,impact of masks on coronavirus transmission,effect of covering nose and mouth on covid-19 spread,deanchoring,True,9,3,0.0,masks,True,5.735,3.501,0,0,0
+45,b,coronavirus mental health impact,emotional and psychiatric toll of covid-19,deanchoring,True,6,2,0.0,mental,True,5.575,3.717,0,0,0
+46,b,dexamethasone coronavirus,recovery trial steroid for covid-19,entity_description,True,5,3,0.0,dexamethasone,True,6.061,3.154,0,0,0
+47,b,COVID-19 outcomes in children,pediatric covid-19 health effects,paraphrase,True,4,0,0.286,children,True,4.193,2.142,0,0,0
+48,b,school reopening coronavirus,restarting in-person classes amid covid-19,deanchoring,True,5,2,0.0,reopening,True,8.035,4.321,0,0,0
+49,b,post-infection COVID-19 immunity,lasting defenses after covid-19 infection,deanchoring,True,5,2,0.429,immunity,True,6.655,3.219,0,0,0
+50,b,mRNA vaccine coronavirus,pfizer and moderna style covid-19 vaccines,entity_description,True,6,3,0.0,mrna,True,9.526,5.158,0,0,0

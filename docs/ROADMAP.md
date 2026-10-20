@@ -76,9 +76,9 @@ Starting now, from `queries/trec_covid_topics.jsonl` (keyword query, question an
 
 - Write **two meaning-preserving rewrites** for each of the 50 keyword queries (proposal §3.1).
 - Tag each rewrite with one phenomenon: paraphrase, acronym/alias, entity description, temporal expression, or lexical de-anchoring.
-- A **different** teammate checks each rewrite against the narrative.
+- Verification: a separate second pass on a different day, against the narrative with the original hidden (single annotator; see `docs/REWRITE_GUIDE.md`).
 - **Not allowed:** negation, number swaps and entity substitutions, because they change relevance.
-- The CSV template comes with A11.
+- Sheet: `queries/variants/trec_covid_rewrites.csv`; check with `python -m src.variants check --dataset trec_covid`.
 
 ---
 
@@ -88,7 +88,7 @@ Starting now, from `queries/trec_covid_topics.jsonl` (keyword query, question an
 |---|---|
 | A9 | **NevIR (RQ4)**: BM25, E5 and a cross-encoder; pairwise accuracy; reported separately |
 | A10 | **Error-analysis tool**: top-10 results with labels, plus relevant docs each system missed |
-| A11 | **Variant tooling**: validate the rewrite CSV; overlap, IDF, length, number and entity features |
+| A11 | **Variant tooling**: validate the rewrite CSV; overlap, IDF, length, number and entity features. ✅ done (`src/variants.py`, `docs/REWRITE_GUIDE.md`) |
 | B1 | Runs on rewrite sets A and B |
 | B2 | **RQ2/RQ3**: change in nDCG@10 from original to rewrite, CIs, worst-case drops, breakdown by phenomenon and overlap bin, feature regression, ranking stability |
 | B3 | **RQ5**: complementarity (relevant docs found by only one system, oracle union recall, RRF gain on worst topics) |

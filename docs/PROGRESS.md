@@ -82,7 +82,7 @@ All code takes the dataset from a config file (`configs/core18.yaml` already exi
 | `requirements.txt`, `requirements-lock.txt` | Dependencies; exact versions from the working Colab environment |
 | `docs/WORKFLOW.md` | How the team writes (VS Code), stores (GitHub) and runs (Colab + Drive) code |
 | `docs/ROADMAP.md` | Step-by-step implementation plan |
-| `pyproject.toml`, `tests/` | Local test suite (pytest); 78 tests passing |
+| `pyproject.toml`, `tests/` | Local test suite (pytest); 93 tests passing |
 
 ### 3.2 Code modules
 
@@ -97,6 +97,7 @@ All code takes the dataset from a config file (`configs/core18.yaml` already exi
 | A5 | `src/dense_encode.py`, `src/dense_search.py` | E5-base-v2 encoding of `passage: ` + title + body (512 tokens, fp16 on GPU, L2-normalized) in 50k-document shards saved to Drive and resumable after a disconnect; exact FAISS IndexFlatIP search with `query: ` prefix; latency, memory, encoding time and model commit recorded | Done; run in Colab on SciFact and TREC-COVID (results in §3.5) |
 | A6 | `src/fuse.py` | Reciprocal rank fusion (k=60, top 1000 of each run) | Done; run in Colab (results in §3.5) |
 | A8 | `src/stats.py` | Paired randomization test (p-values), paired bootstrap (95% CI of the mean difference), Holm correction across comparisons, wins/ties/losses per topic | Done, tested on synthetic data; run on TREC-COVID (§3.5) |
+| A11 | `src/variants.py`, `docs/REWRITE_GUIDE.md` | Rewrite sheet pre-filled with each topic's original query, question, narrative and anchor (rarest) term; automatic checks (negation added, phenomenon tag, anchor still present, content-word overlap, length and question/keyword form, standalone numbers, verification); exports the rewrite query files and a per-rewrite feature table (overlap, anchor removed, IDF, length, numbers, acronyms) for RQ3 | Done, tested; rewriting in progress (single annotator) |
 
 ### 3.3 Corpus facts (TREC-COVID, from `prepare_corpus`)
 - 171,331 documents kept (1 empty document dropped); 42,139 (25%) are title-only.
@@ -175,6 +176,5 @@ See `docs/ROADMAP.md` for the full plan.
 |---|---|---|
 | A9 | NevIR (RQ4) | BM25, E5, cross-encoder reference |
 | A10 | Error-analysis tool | Top-10 inspection with labels |
-| A11 | Rewrite tooling | Validate the rewrite CSV, compute overlap features |
-| — | Rewrites | 2 meaning-preserving rewrites × 50 TREC-COVID topics, tagged and cross-checked |
+| — | Rewrites | 2 meaning-preserving rewrites × 50 TREC-COVID topics, tagged; written and self-verified by one annotator (see `docs/REWRITE_GUIDE.md`) |
 | B | Analysis | RQ2/RQ3 robustness, RQ5 complementarity, figures, report |
