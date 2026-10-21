@@ -61,24 +61,18 @@ How we build the code for *Robust Retrieval Under Vocabulary Mismatch*, step by 
 
 ### Schedule to the intermediate report
 
-| Day | Work |
-|---|---|
-| 20 Oct | A3 + A4; BM25 runs on SciFact and TREC-COVID in Colab |
-| 21 Oct | A5 + A6; dense encoding of TREC-COVID on a GPU runtime |
-| 22 Oct | A7 full results table (effectiveness + efficiency); A8 significance tests |
-| 23 Oct | Draft the 4-page report from `docs/PROGRESS.md` and the results |
-| 24 Oct | Finalize the PDF; contribution matrix from the team |
-| 25 Oct | Submit (`5_<ShortTitle>.pdf`) |
+| Day | Work | Status |
+|---|---|---|
+| 19 Oct | A3–A8: corpus, BM25, dense, RRF, end-to-end runs, significance tests | ✅ (ahead of plan) |
+| 20–21 Oct | A11 tooling + 100 query rewrites, verified | ✅ |
+| 22 Oct | Rewrite runs (notebook Part 4); first RQ2 results into PROGRESS | next |
+| 23 Oct | Draft the 4-page report from `docs/PROGRESS.md` and the results | |
+| 24 Oct | Finalize the PDF; contribution matrix | |
+| 25 Oct | Submit (`5_<ShortTitle>.pdf`) | |
 
-### Team work in parallel (no code needed)
+### Query rewrites ✅ (21 Oct)
 
-Starting now, from `queries/trec_covid_topics.jsonl` (keyword query, question and narrative per topic):
-
-- Write **two meaning-preserving rewrites** for each of the 50 keyword queries (proposal §3.1).
-- Tag each rewrite with one phenomenon: paraphrase, acronym/alias, entity description, temporal expression, or lexical de-anchoring.
-- Verification: a separate second pass on a different day, against the narrative with the original hidden (single annotator; see `docs/REWRITE_GUIDE.md`).
-- **Not allowed:** negation, number swaps and entity substitutions, because they change relevance.
-- Sheet: `queries/variants/trec_covid_rewrites.csv`; check with `python -m src.variants check --dataset trec_covid`.
+100 meaning-preserving rewrites (2 × 50 topics) written, tagged with one phenomenon each, and self-verified against the narratives (single annotator; see `docs/REWRITE_GUIDE.md` and PROGRESS §3.6). Sheet: `queries/variants/trec_covid_rewrites.csv`; check with `python -m src.variants check --dataset trec_covid`.
 
 ---
 
@@ -88,8 +82,8 @@ Starting now, from `queries/trec_covid_topics.jsonl` (keyword query, question an
 |---|---|
 | A9 | **NevIR (RQ4)**: BM25, E5 and a cross-encoder; pairwise accuracy; reported separately |
 | A10 | **Error-analysis tool**: top-10 results with labels, plus relevant docs each system missed |
-| A11 | **Variant tooling**: validate the rewrite CSV; overlap, IDF, length, number and entity features. ✅ done (`src/variants.py`, `docs/REWRITE_GUIDE.md`) |
-| B1 | Runs on rewrite sets A and B |
+| A11 | **Variant tooling**: validate the rewrite CSV; overlap, IDF, length, number and entity features. ✅ done; 100 rewrites finished 21 Oct |
+| B1 | Runs on rewrite sets A and B (notebook Part 4); next step |
 | B2 | **RQ2/RQ3**: change in nDCG@10 from original to rewrite, CIs, worst-case drops, breakdown by phenomenon and overlap bin, feature regression, ranking stability |
 | B3 | **RQ5**: complementarity (relevant docs found by only one system, oracle union recall, RRF gain on worst topics) |
 | B4 | Error analysis, figures, final report, presentation and demo |

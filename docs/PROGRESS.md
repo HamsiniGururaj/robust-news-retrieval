@@ -82,7 +82,9 @@ All code takes the dataset from a config file (`configs/core18.yaml` already exi
 | `requirements.txt`, `requirements-lock.txt` | Dependencies; exact versions from the working Colab environment |
 | `docs/WORKFLOW.md` | How the team writes (VS Code), stores (GitHub) and runs (Colab + Drive) code |
 | `docs/ROADMAP.md` | Step-by-step implementation plan |
-| `pyproject.toml`, `tests/` | Local test suite (pytest); 93 tests passing |
+| `docs/REWRITE_GUIDE.md` | Rubric and procedure for writing and verifying the query rewrites |
+| `notebooks/01_pipeline.ipynb` | Colab driver: setup → SciFact smoke test → TREC-COVID BM25 → dense + RRF → evaluation → efficiency → rewrite runs (Part 4) |
+| `pyproject.toml`, `tests/` | Local test suite (pytest); 94 tests passing |
 
 ### 3.2 Code modules
 
@@ -97,7 +99,7 @@ All code takes the dataset from a config file (`configs/core18.yaml` already exi
 | A5 | `src/dense_encode.py`, `src/dense_search.py` | E5-base-v2 encoding of `passage: ` + title + body (512 tokens, fp16 on GPU, L2-normalized) in 50k-document shards saved to Drive and resumable after a disconnect; exact FAISS IndexFlatIP search with `query: ` prefix; latency, memory, encoding time and model commit recorded | Done; run in Colab on SciFact and TREC-COVID (results in §3.5) |
 | A6 | `src/fuse.py` | Reciprocal rank fusion (k=60, top 1000 of each run) | Done; run in Colab (results in §3.5) |
 | A8 | `src/stats.py` | Paired randomization test (p-values), paired bootstrap (95% CI of the mean difference), Holm correction across comparisons, wins/ties/losses per topic | Done, tested on synthetic data; run on TREC-COVID (§3.5) |
-| A11 | `src/variants.py`, `docs/REWRITE_GUIDE.md` | Rewrite sheet pre-filled with each topic's original query, question, narrative and anchor (rarest) term; automatic checks (negation added, phenomenon tag, anchor still present, content-word overlap, length and question/keyword form, standalone numbers, verification); exports the rewrite query files and a per-rewrite feature table (overlap, anchor removed, IDF, length, numbers, acronyms) for RQ3 | Done, tested; rewriting in progress (single annotator) |
+| A11 | `src/variants.py`, `docs/REWRITE_GUIDE.md` | Rewrite sheet pre-filled with each topic's original query, question, narrative and anchor (rarest) term; automatic checks (negation added, phenomenon tag, anchor still present, content-word overlap, length and question/keyword form, standalone numbers, verification); exports the rewrite query files and a per-rewrite feature table (overlap, anchor removed, IDF, length, numbers, acronyms) for RQ3 | Done, tested; used to produce the final rewrite set (§3.6). Also reads sheets saved by Excel as Windows-1252 |
 
 ### 3.3 Corpus facts (TREC-COVID, from `prepare_corpus`)
 - 171,331 documents kept (1 empty document dropped); 42,139 (25%) are title-only.
@@ -109,6 +111,8 @@ All code takes the dataset from a config file (`configs/core18.yaml` already exi
 | TREC-COVID | 50 | 66,336 | 0/1/2 | Primary benchmark |
 | SciFact | 300 | 339 | 1 only | Pipeline smoke test |
 | Core 2018 | 50 | 26,233 | 0/1/2 | Exported; used only if WaPo arrives |
+
+Query sets for TREC-COVID: `trec_covid_query.tsv` (original keyword queries), `trec_covid_text.tsv` (NIST question form), `trec_covid_rewrite_a.tsv` and `trec_covid_rewrite_b.tsv` (our rewrites, §3.6).
 
 ---
 
@@ -169,6 +173,27 @@ Latency is measured one query at a time after a warm-up query, on a local copy o
 
 Model revision used: `intfloat/e5-base-v2` @ `f52bf8ec8c7124536f0efb74aca902b2995e5bcd` (now pinned in `configs/default.yaml`).
 
+### 3.6 Query rewrite set (completed 21 Oct 2026)
+
+100 rewrites, 2 per topic, of the original keyword queries, following `docs/REWRITE_GUIDE.md`. Written by a single annotator, checked automatically, then re-verified against each topic's narrative in a separate pass with the original hidden. A manual review of all 100 against their originals found 8 likely meaning changes (broadening, narrowing, a form change); these were corrected before any system was run on the rewrites.
+
+| Property | Value |
+|---|---|
+| Rewrites | 100 (50 topics × A, B); all verified |
+| Phenomena | paraphrase 42, de-anchoring 34, alias 16, entity description 7, temporal 1 |
+| Set A / set B | A mostly paraphrase (35) and alias (14); B mostly de-anchoring (33), plus all 7 entity descriptions |
+| Anchor (rarest original term) removed | 97 / 100 (the 3 kept are justified in the sheet's notes) |
+| Content-word overlap with original (Jaccard) | mean 0.13, median 0.10; 49 rewrites share no content word |
+| Length | 4.8 words on average vs 3.2 for the originals (mean change +1.5, range −2 to +4); keyword form kept throughout |
+| Checker | 0 errors; 9 accepted warnings (length +4 ×3, anchor kept ×3, overlap > 0.5 ×3) |
+
+Implications for the analysis:
+- **Sets A and B are not interchangeable.** B is systematically more de-anchored, so results are reported per set as well as pooled.
+- **Phenomenon groups for RQ3:** paraphrase, de-anchoring and alias are large enough to compare. Entity description (7) and temporal (1) are reported qualitatively, as the proposal's risk table anticipated.
+- **Limitation:** single-annotator verification. The proposal planned independent verification by a second group member.
+
+Files: `queries/variants/trec_covid_rewrites.csv` (the sheet), `queries/trec_covid_rewrite_{a,b}.tsv` (run inputs), `queries/variants/trec_covid_rewrite_features.csv` (per-rewrite features for RQ3).
+
 ## 4. Pending work
 See `docs/ROADMAP.md` for the full plan.
 
@@ -176,5 +201,5 @@ See `docs/ROADMAP.md` for the full plan.
 |---|---|---|
 | A9 | NevIR (RQ4) | BM25, E5, cross-encoder reference |
 | A10 | Error-analysis tool | Top-10 inspection with labels |
-| — | Rewrites | 2 meaning-preserving rewrites × 50 TREC-COVID topics, tagged; written and self-verified by one annotator (see `docs/REWRITE_GUIDE.md`) |
+| B1 | Rewrite runs | BM25, dense and RRF on rewrite sets A and B (`notebooks/01_pipeline.ipynb` Part 4), then evaluation and significance vs the original queries |
 | B | Analysis | RQ2/RQ3 robustness, RQ5 complementarity, figures, report |

@@ -45,7 +45,10 @@ eval:
   # Judged@10 is a diagnostic, not a quality metric: the share of the top 10 that
   # has any judgement. Low values mean scores are underestimated by unjudged docs,
   # which tends to hit dense retrieval on pools built from older (lexical) runs.
-  measures: ["nDCG@10", "AP(rel=1)", "R(rel=1)@100", "Judged@10"]
+  # nDCG(judged_only=True)@10 ("nDCG'@10", condensed lists, Sakai 2007) and Bpref
+  # (Buckley & Voorhees 2004) ignore unjudged documents. They matter for the
+  # rewrites, which retrieve many documents the NIST pools never judged.
+  measures: ["nDCG@10", "AP(rel=1)", "R(rel=1)@100", "Judged@10", "nDCG(judged_only=True)@10", "Bpref"]
 
 stats:
   n_resamples: 10000

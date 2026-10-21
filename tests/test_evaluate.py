@@ -77,6 +77,15 @@ def test_judged_at_10():
     assert scores["3"]["Judged@10"] == 0.0                   # nothing retrieved
 
 
+def test_judged_only_ndcg_skips_unjudged_documents():
+    # Topic 2: d0 (unjudged) and d5 (relevant) tie; d5 is rank 1 anyway.
+    # Add an unjudged document ABOVE a relevant one: plain nDCG penalises it, nDCG' does not.
+    run = {"2": {"u1": 2.0, "d5": 1.0}}
+    scores, _ = evaluate_run(run, {"2": {"d5": 1}}, ["nDCG@10", "nDCG(judged_only=True)@10"])
+    assert scores["2"]["nDCG@10"] == pytest.approx(1 / math.log2(3))   # d5 at rank 2
+    assert scores["2"]["nDCG(judged_only=True)@10"] == pytest.approx(1.0)  # u1 removed -> d5 at rank 1
+
+
 def test_per_topic_csv_round_trip(scores, tmp_path):
     path = write_per_topic(scores, "toy", tmp_path / "toy.csv")
     assert path.read_text(encoding="utf-8").splitlines()[0] == "run,qid,measure,value"
