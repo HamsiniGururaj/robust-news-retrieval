@@ -1,0 +1,4 @@
+run_a,run_b,measure,n_topics,mean_a,mean_b,mean_diff,ci_low,ci_high,p_value,p_holm,wins,ties,losses
+bm25_rewrite_b,bm25_query,nDCG(judged_only=True)@10,50,0.530080,0.652959,-0.122879,-0.207094,-0.035697,0.008999,0.026997,14,0,36
+dense_rewrite_b,dense_query,nDCG(judged_only=True)@10,50,0.730307,0.777540,-0.047233,-0.111246,0.013150,0.136686,0.136686,17,2,31
+rrf_rewrite_b,rrf_query,nDCG(judged_only=True)@10,50,0.679769,0.758455,-0.078686,-0.137653,-0.017935,0.014099,0.028197,15,2,33

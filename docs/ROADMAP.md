@@ -65,7 +65,7 @@ How we build the code for *Robust Retrieval Under Vocabulary Mismatch*, step by 
 |---|---|---|
 | 19 Oct | A3–A8: corpus, BM25, dense, RRF, end-to-end runs, significance tests | ✅ (ahead of plan) |
 | 20–21 Oct | A11 tooling + 100 query rewrites, verified | ✅ |
-| 22 Oct | Rewrite runs (notebook Part 4); first RQ2 results into PROGRESS | next |
+| 21 Oct | Rewrite runs (notebook Part 4); RQ2 significance on 3 measures into PROGRESS §3.7 | ✅ (ahead of plan) |
 | 23 Oct | Draft the 4-page report from `docs/PROGRESS.md` and the results | |
 | 24 Oct | Finalize the PDF; contribution matrix | |
 | 25 Oct | Submit (`5_<ShortTitle>.pdf`) | |
@@ -83,7 +83,7 @@ How we build the code for *Robust Retrieval Under Vocabulary Mismatch*, step by 
 | A9 | **NevIR (RQ4)**: BM25, E5 and a cross-encoder; pairwise accuracy; reported separately |
 | A10 | **Error-analysis tool**: top-10 results with labels, plus relevant docs each system missed |
 | A11 | **Variant tooling**: validate the rewrite CSV; overlap, IDF, length, number and entity features. ✅ done; 100 rewrites finished 21 Oct |
-| B1 | Runs on rewrite sets A and B (notebook Part 4); next step |
+| B1 | Runs on rewrite sets A and B ✅ 21 Oct; first RQ2 results in PROGRESS §3.7 |
 | B2 | **RQ2/RQ3**: change in nDCG@10 from original to rewrite, CIs, worst-case drops, breakdown by phenomenon and overlap bin, feature regression, ranking stability |
 | B3 | **RQ5**: complementarity (relevant docs found by only one system, oracle union recall, RRF gain on worst topics) |
 | B4 | Error analysis, figures, final report, presentation and demo |

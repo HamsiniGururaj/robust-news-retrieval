@@ -1,0 +1,7 @@
+run_a,run_b,measure,n_topics,mean_a,mean_b,mean_diff,ci_low,ci_high,p_value,p_holm,wins,ties,losses
+dense_rewrite_a-dense_query,bm25_rewrite_a-bm25_query,nDCG(judged_only=True)@10,50,-0.022034,-0.116821,0.094788,0.013870,0.173819,0.024798,0.148785,33,0,17
+dense_rewrite_b-dense_query,bm25_rewrite_b-bm25_query,nDCG(judged_only=True)@10,50,-0.047233,-0.122879,0.075646,-0.012672,0.161713,0.097990,0.391961,33,0,17
+rrf_rewrite_a-rrf_query,bm25_rewrite_a-bm25_query,nDCG(judged_only=True)@10,50,-0.043517,-0.116821,0.073305,0.009902,0.139327,0.035596,0.177982,31,0,19
+rrf_rewrite_b-rrf_query,bm25_rewrite_b-bm25_query,nDCG(judged_only=True)@10,50,-0.078686,-0.122879,0.044194,-0.020124,0.105319,0.178882,0.536646,32,0,18
+rrf_rewrite_a-rrf_query,dense_rewrite_a-dense_query,nDCG(judged_only=True)@10,50,-0.043517,-0.022034,-0.021483,-0.074088,0.035131,0.448355,0.677132,19,2,29
+rrf_rewrite_b-rrf_query,dense_rewrite_b-dense_query,nDCG(judged_only=True)@10,50,-0.078686,-0.047233,-0.031453,-0.091745,0.031462,0.338566,0.677132,20,1,29

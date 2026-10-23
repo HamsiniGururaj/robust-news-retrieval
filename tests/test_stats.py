@@ -2,7 +2,7 @@
 import numpy as np
 import pytest
 
-from src.stats import bootstrap_ci, compare, holm, main, paired_values, randomization_p
+from src.stats import bootstrap_ci, compare, holm, load_scores, main, paired_values, randomization_p
 from src.evaluate import write_per_topic
 
 
@@ -59,6 +59,18 @@ def test_holm_by_hand():
     # sorted: 0.01*3=0.03, 0.03*2=0.06, max(0.06, 0.04*1)=0.06
     assert holm([0.01, 0.04, 0.03]) == pytest.approx([0.03, 0.06, 0.06])
     assert holm([0.5, 0.9]) == pytest.approx([1.0, 1.0])
+
+
+def test_difference_names_compare_changes():
+    runs = {
+        "bm25_q": per_topic([0.6, 0.6]), "bm25_r": per_topic([0.2, 0.4]),   # drops -0.4, -0.2
+        "dense_q": per_topic([0.5, 0.5]), "dense_r": per_topic([0.4, 0.5]),  # drops -0.1,  0.0
+    }
+    scores = load_scores(["dense_r-dense_q", "bm25_r-bm25_q"], runs.__getitem__)
+    assert scores["bm25_r-bm25_q"]["0"]["nDCG@10"] == pytest.approx(-0.4)
+    [r] = compare(scores, [("dense_r-dense_q", "bm25_r-bm25_q")], "nDCG@10", n_resamples=500)
+    assert r.mean_diff == pytest.approx(0.25)  # dense loses 0.25 less on average
+    assert r.wins == 2
 
 
 def test_mismatched_topics_rejected():

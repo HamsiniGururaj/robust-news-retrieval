@@ -84,7 +84,7 @@ All code takes the dataset from a config file (`configs/core18.yaml` already exi
 | `docs/ROADMAP.md` | Step-by-step implementation plan |
 | `docs/REWRITE_GUIDE.md` | Rubric and procedure for writing and verifying the query rewrites |
 | `notebooks/01_pipeline.ipynb` | Colab driver: setup → SciFact smoke test → TREC-COVID BM25 → dense + RRF → evaluation → efficiency → rewrite runs (Part 4) |
-| `pyproject.toml`, `tests/` | Local test suite (pytest); 94 tests passing |
+| `pyproject.toml`, `tests/` | Local test suite (pytest); 96 tests passing |
 
 ### 3.2 Code modules
 
@@ -194,6 +194,63 @@ Implications for the analysis:
 
 Files: `queries/variants/trec_covid_rewrites.csv` (the sheet), `queries/trec_covid_rewrite_{a,b}.tsv` (run inputs), `queries/variants/trec_covid_rewrite_features.csv` (per-rewrite features for RQ3).
 
+### 3.7 RQ2 first results: original vs rewritten queries (21 Oct 2026)
+
+Each system was run on rewrite sets A and B (`notebooks/01_pipeline.ipynb`, Part 4; GPU query encoding throughout) and scored against the unchanged qrels.
+
+**Judged documents collapse for the rewrites.** The rewrites retrieve many documents that the 2020 NIST pools (built from systems run on the *original* topics) never judged, and the standard metrics count those as non-relevant:
+
+| System | Judged@10: original | rewrite A | rewrite B |
+|---|---|---|---|
+| BM25 | 0.958 | 0.408 | 0.396 |
+| Dense | 0.686 | 0.534 | 0.506 |
+| RRF | 0.936 | 0.564 | 0.554 |
+
+So every result is reported on three measures: standard **nDCG@10**, **judged-only nDCG'@10** (unjudged documents removed before scoring, "condensed lists", Sakai 2007) and **bpref** (built for incomplete judgements, Buckley & Voorhees 2004).
+
+**Scores:**
+
+| Run | nDCG@10 | nDCG'@10 (judged only) | Bpref |
+|---|---|---|---|
+| BM25 original / A / B | 0.639 / 0.303 / 0.240 | 0.653 / 0.536 / 0.530 | 0.329 / 0.163 / 0.172 |
+| Dense original / A / B | 0.563 / 0.430 / 0.397 | 0.778 / 0.756 / 0.730 | 0.394 / 0.351 / 0.333 |
+| RRF original / A / B | 0.731 / 0.454 / 0.395 | 0.759 / 0.715 / 0.680 | 0.407 / 0.312 / 0.297 |
+
+**Change from original to rewrite (A / B), with Holm-corrected significance within each family of three systems:**
+
+| System | nDCG@10 | nDCG'@10 | Bpref |
+|---|---|---|---|
+| BM25 | **−0.336 / −0.399** | **−0.117 / −0.123** | **−0.166 / −0.158** |
+| Dense | **−0.133 / −0.166** | −0.022 / −0.047 (n.s.) | **−0.043 / −0.062** |
+| RRF | **−0.277 / −0.337** | −0.044 (n.s.) / **−0.079** | **−0.095 / −0.110** |
+
+Bold = significant at α = 0.05 after Holm.
+
+**H1: does dense lose less than BM25?** Paired test on the per-topic changes, Holm across 6 change-vs-change comparisons per measure:
+
+| Comparison (difference in drop) | nDCG@10 | nDCG'@10 | Bpref |
+|---|---|---|---|
+| Dense vs BM25, set A | **+0.203** (p_holm 0.0006, 34/16) | +0.095 (raw p 0.025, p_holm 0.15) | **+0.123** (p_holm 0.0006, 38/12) |
+| Dense vs BM25, set B | **+0.234** (p_holm 0.001, 37/13) | +0.076 (raw p 0.098, p_holm 0.39) | **+0.096** (p_holm 0.0006, 38/12) |
+| RRF vs BM25, set A / B | +0.059 / +0.062 (n.s.) | +0.073 / +0.044 (n.s.) | **+0.071 / +0.047** |
+| RRF vs dense, set A / B | **−0.144 / −0.171** | −0.022 / −0.032 (n.s.) | **−0.052 / −0.049** |
+
+Findings:
+1. **H1 supported.** Dense loses much less than BM25 under meaning-preserving rewording on every measure (it wins on 33–38 of 50 topics). The difference is significant on nDCG@10 and bpref. On judged-only nDCG' it points the same way but does not survive Holm correction across six comparisons.
+2. **BM25 is the system that rewording really hurts.** Its drop is significant on all three measures. Dense's judged-only drop (−0.02 / −0.05) is not significant: when only judged documents count, dense is close to wording-invariant.
+3. **RRF is less robust than dense (nuance for H3).** RRF drops significantly more than dense on nDCG@10 and bpref, because fusion imports BM25's failures on the rewrites. On the rewrites RRF ≈ dense (nDCG@10 0.454 vs 0.430; 0.395 vs 0.397), so its large advantage on the original queries disappears. Fusion helps when both components work; it does not protect against one component collapsing. RQ5 will look at this per topic.
+4. **Set B (mostly de-anchoring) hurts more than set A (mostly paraphrase/alias)** for every system, as expected.
+5. **The judged-only metric reverses the RQ1 keyword-query comparison:** dense 0.778 vs BM25 0.653 nDCG'@10 (standard nDCG@10: 0.563 vs 0.639). Dense's apparent deficit with keyword queries was largely an artefact of unjudged documents.
+
+**Validity note for the report.** Reusing qrels for reworded queries is limited by pool completeness: 45–60% of the rewrites' top-10 documents are unjudged. Standard nDCG@10 therefore overstates the drops, while judged-only metrics can overstate quality (they assume unjudged documents would have been judged in the same proportion). Agreement across all three measures on the direction of every main effect is what makes the conclusions credible.
+
+Commands:
+```
+python -m src.stats --dataset trec_covid --measure "<M>" --label rewrite_a_vs_original --pairs bm25_rewrite_a:bm25_query dense_rewrite_a:dense_query rrf_rewrite_a:rrf_query
+python -m src.stats --dataset trec_covid --measure "<M>" --label h1 --pairs dense_rewrite_a-dense_query:bm25_rewrite_a-bm25_query ...
+```
+`<M>` is `nDCG@10`, `nDCG(judged_only=True)@10` or `Bpref`. Outputs: `results/trec_covid/significance_*.csv`.
+
 ## 4. Pending work
 See `docs/ROADMAP.md` for the full plan.
 
@@ -201,5 +258,6 @@ See `docs/ROADMAP.md` for the full plan.
 |---|---|---|
 | A9 | NevIR (RQ4) | BM25, E5, cross-encoder reference |
 | A10 | Error-analysis tool | Top-10 inspection with labels |
-| B1 | Rewrite runs | BM25, dense and RRF on rewrite sets A and B (`notebooks/01_pipeline.ipynb` Part 4), then evaluation and significance vs the original queries |
-| B | Analysis | RQ2/RQ3 robustness, RQ5 complementarity, figures, report |
+| B2 | RQ2/RQ3 analysis | Per-phenomenon and overlap-level breakdown, feature regression (rewrite features → BM25-vs-dense advantage), ranking stability |
+| B3 | RQ5 complementarity | Relevant documents unique to each system, oracle union recall, why RRF loses its advantage on rewrites |
+| B4 | Report | Figures, final report, presentation and demo |

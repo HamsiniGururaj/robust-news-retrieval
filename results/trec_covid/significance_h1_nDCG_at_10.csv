@@ -1,0 +1,7 @@
+run_a,run_b,measure,n_topics,mean_a,mean_b,mean_diff,ci_low,ci_high,p_value,p_holm,wins,ties,losses
+dense_rewrite_a-dense_query,bm25_rewrite_a-bm25_query,nDCG@10,50,-0.132672,-0.336068,0.203396,0.118266,0.290370,0.000100,0.000600,34,0,16
+dense_rewrite_b-dense_query,bm25_rewrite_b-bm25_query,nDCG@10,50,-0.165514,-0.399126,0.233612,0.129477,0.339084,0.000200,0.001000,37,0,13
+rrf_rewrite_a-rrf_query,bm25_rewrite_a-bm25_query,nDCG@10,50,-0.277063,-0.336068,0.059005,-0.003038,0.122897,0.077592,0.100190,28,0,22
+rrf_rewrite_b-rrf_query,bm25_rewrite_b-bm25_query,nDCG@10,50,-0.336717,-0.399126,0.062410,0.002691,0.120308,0.050095,0.100190,32,0,18
+rrf_rewrite_a-rrf_query,dense_rewrite_a-dense_query,nDCG@10,50,-0.277063,-0.132672,-0.144390,-0.216432,-0.072016,0.000300,0.001200,13,0,37
+rrf_rewrite_b-rrf_query,dense_rewrite_b-dense_query,nDCG@10,50,-0.336717,-0.165514,-0.171202,-0.263977,-0.078799,0.000500,0.001500,13,1,36

@@ -1,0 +1,4 @@
+run_a,run_b,measure,n_topics,mean_a,mean_b,mean_diff,ci_low,ci_high,p_value,p_holm,wins,ties,losses
+bm25_rewrite_a,bm25_query,Bpref,50,0.163020,0.328952,-0.165932,-0.217366,-0.115673,0.000100,0.000300,10,0,40
+dense_rewrite_a,dense_query,Bpref,50,0.351289,0.394289,-0.043000,-0.085621,-0.002159,0.049695,0.049695,17,0,33
+rrf_rewrite_a,rrf_query,Bpref,50,0.311836,0.407065,-0.095229,-0.140478,-0.051263,0.000200,0.000400,16,0,34

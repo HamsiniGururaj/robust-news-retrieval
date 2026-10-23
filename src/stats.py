@@ -20,6 +20,13 @@ src.evaluate against the same qrels).
 --runs compares every pair of the listed runs; --pairs compares only the given
 A:B pairs. Either way, Holm correction is applied across the comparisons made.
 
+A name of the form X-Y means "per-topic score of X minus Y" (e.g. the change
+from the original query to a rewrite), so changes can be compared with changes.
+H1, "dense loses less than BM25 when the query is reworded":
+  python -m src.stats --dataset trec_covid --label h1 \
+      --pairs dense_rewrite_a-dense_query:bm25_rewrite_a-bm25_query \
+              dense_rewrite_b-dense_query:bm25_rewrite_b-bm25_query
+
 Output: results/<dataset>/significance_<label>.csv (+ a printed table)
 """
 from __future__ import annotations
@@ -60,6 +67,25 @@ def paired_values(a: dict[str, dict[str, float]], b: dict[str, dict[str, float]]
         raise ValueError(f"Runs cover different topics ({len(a)} vs {len(b)}); score them against the same qrels")
     qids = sorted(a, key=qid_sort_key)
     return np.array([a[q][measure] for q in qids]), np.array([b[q][measure] for q in qids])
+
+
+def difference(x: dict[str, dict[str, float]], y: dict[str, dict[str, float]]) -> dict[str, dict[str, float]]:
+    """Per-topic, per-measure x - y (e.g. a rewrite's score minus the original's)."""
+    if set(x) != set(y):
+        raise ValueError("Runs cover different topics; score them against the same qrels")
+    return {q: {m: x[q][m] - y[q][m] for m in x[q] if m in y[q]} for q in x}
+
+
+def load_scores(names: list[str], read) -> dict[str, dict]:
+    """Per-topic scores for each name; "X-Y" is the per-topic difference of runs X and Y."""
+    scores = {}
+    for name in names:
+        if "-" in name:
+            x, y = name.split("-", 1)
+            scores[name] = difference(read(x), read(y))
+        else:
+            scores[name] = read(name)
+    return scores
 
 
 def bootstrap_ci(diff: np.ndarray, n_resamples: int, alpha: float, rng: np.random.Generator) -> tuple[float, float]:
@@ -157,7 +183,7 @@ def main(argv: list[str] | None = None) -> None:
     names = list(dict.fromkeys(name for pair in pairs for name in pair))
 
     results_dir = repo_dir(cfg, "results_dir") / cfg["dataset"]["name"]
-    scores = {name: read_per_topic(results_dir / f"{name}.csv") for name in names}
+    scores = load_scores(names, lambda run: read_per_topic(results_dir / f"{run}.csv"))
     stats_cfg = cfg["stats"]
     results = compare(scores, pairs, args.measure, stats_cfg["n_resamples"], stats_cfg["alpha"], cfg["seed"])
 

@@ -1,0 +1,7 @@
+run_a,run_b,measure,n_topics,mean_a,mean_b,mean_diff,ci_low,ci_high,p_value,p_holm,wins,ties,losses
+dense_rewrite_a-dense_query,bm25_rewrite_a-bm25_query,Bpref,50,-0.043000,-0.165932,0.122932,0.079847,0.166868,0.000100,0.000600,38,0,12
+dense_rewrite_b-dense_query,bm25_rewrite_b-bm25_query,Bpref,50,-0.061580,-0.157457,0.095877,0.054705,0.137766,0.000100,0.000600,38,0,12
+rrf_rewrite_a-rrf_query,bm25_rewrite_a-bm25_query,Bpref,50,-0.095229,-0.165932,0.070703,0.042568,0.100230,0.000100,0.000600,35,0,15
+rrf_rewrite_b-rrf_query,bm25_rewrite_b-bm25_query,Bpref,50,-0.110156,-0.157457,0.047300,0.020776,0.076488,0.000600,0.000600,37,0,13
+rrf_rewrite_a-rrf_query,dense_rewrite_a-dense_query,Bpref,50,-0.095229,-0.043000,-0.052229,-0.071238,-0.032436,0.000100,0.000600,13,0,37
+rrf_rewrite_b-rrf_query,dense_rewrite_b-dense_query,Bpref,50,-0.110156,-0.061580,-0.048577,-0.069336,-0.027860,0.000100,0.000600,13,0,37
