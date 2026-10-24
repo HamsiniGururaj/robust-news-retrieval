@@ -84,7 +84,7 @@ All code takes the dataset from a config file (`configs/core18.yaml` already exi
 | `docs/ROADMAP.md` | Step-by-step implementation plan |
 | `docs/REWRITE_GUIDE.md` | Rubric and procedure for writing and verifying the query rewrites |
 | `notebooks/01_pipeline.ipynb` | Colab driver: setup → SciFact smoke test → TREC-COVID BM25 → dense + RRF → evaluation → efficiency → rewrite runs (Part 4) |
-| `pyproject.toml`, `tests/` | Local test suite (pytest); 96 tests passing |
+| `pyproject.toml`, `tests/` | Local test suite (pytest); 100 tests passing |
 
 ### 3.2 Code modules
 
@@ -99,6 +99,7 @@ All code takes the dataset from a config file (`configs/core18.yaml` already exi
 | A5 | `src/dense_encode.py`, `src/dense_search.py` | E5-base-v2 encoding of `passage: ` + title + body (512 tokens, fp16 on GPU, L2-normalized) in 50k-document shards saved to Drive and resumable after a disconnect; exact FAISS IndexFlatIP search with `query: ` prefix; latency, memory, encoding time and model commit recorded | Done; run in Colab on SciFact and TREC-COVID (results in §3.5) |
 | A6 | `src/fuse.py` | Reciprocal rank fusion (k=60, top 1000 of each run) | Done; run in Colab (results in §3.5) |
 | A8 | `src/stats.py` | Paired randomization test (p-values), paired bootstrap (95% CI of the mean difference), Holm correction across comparisons, wins/ties/losses per topic | Done, tested on synthetic data; run on TREC-COVID (§3.5) |
+| RQ3 | `src/robustness.py` | Change per system per rewrite; dense advantage by phenomenon (bootstrap CI, randomization test, Holm) and its rank correlation with rewrite features (permutation test, Holm) | Done, tested; results in §3.8 |
 | A11 | `src/variants.py`, `docs/REWRITE_GUIDE.md` | Rewrite sheet pre-filled with each topic's original query, question, narrative and anchor (rarest) term; automatic checks (negation added, phenomenon tag, anchor still present, content-word overlap, length and question/keyword form, standalone numbers, verification); exports the rewrite query files and a per-rewrite feature table (overlap, anchor removed, IDF, length, numbers, acronyms) for RQ3 | Done, tested; used to produce the final rewrite set (§3.6). Also reads sheets saved by Excel as Windows-1252 |
 
 ### 3.3 Corpus facts (TREC-COVID, from `prepare_corpus`)
@@ -251,6 +252,34 @@ python -m src.stats --dataset trec_covid --measure "<M>" --label h1 --pairs dens
 ```
 `<M>` is `nDCG@10`, `nDCG(judged_only=True)@10` or `Bpref`. Outputs: `results/trec_covid/significance_*.csv`.
 
+### 3.8 RQ3 first results: kinds of rewording and query features (25 Oct 2026)
+
+`src/robustness.py`. Each rewrite is one observation (100). Per rewrite: change = score(rewrite) − score(original) for each system, and **dense advantage** = change(dense) − change(BM25). Analysis 1: mean change and mean dense advantage per phenomenon, with bootstrap 95% CI and sign-flip randomization test, Holm across the phenomena with ≥ 10 rewrites. Analysis 2: Spearman correlation of each rewrite feature with the dense advantage, permutation test, Holm across features.
+
+**By phenomenon (nDCG@10 change):**
+
+| Phenomenon | n | BM25 | Dense | RRF | Dense advantage [95% CI] | p_holm nDCG@10 / nDCG'@10 / bpref |
+|---|---|---|---|---|---|---|
+| paraphrase | 42 | −0.368 | −0.167 | −0.311 | **+0.200** [+0.109, +0.292] | 0.0006 / 0.086 / 0.0003 |
+| deanchoring | 34 | −0.337 | −0.122 | −0.288 | **+0.215** [+0.088, +0.345] | 0.0042 / 0.60 / 0.0078 |
+| alias | 16 | −0.365 | −0.063 | −0.298 | **+0.302** [+0.127, +0.495] | 0.0049 / 0.060 / 0.026 |
+| entity_description | 7 | −0.549 | −0.387 | −0.437 | +0.162 | not tested (n < 10) |
+| temporal | 1 | −0.179 | 0.000 | 0.000 | +0.179 | not tested |
+
+Dense advantage on judged-only nDCG'@10: paraphrase +0.087, deanchoring +0.031, alias +0.192, entity_description +0.082 (all positive, none significant after Holm).
+
+**By feature (Spearman ρ with dense advantage, nDCG@10):** content_overlap +0.199 (p = 0.043, p_holm = 0.25), length_change +0.191 (p = 0.056), mean_idf +0.159, n_words +0.137, max_idf +0.128; none significant after Holm. Similar on nDCG'@10 and bpref. `n_acronyms` is 0 for every rewrite (all rewrites were written in lower case), so it carries no information.
+
+Findings:
+1. Dense's advantage is positive for every kind of rewording, and significant for the three large groups on nDCG@10 and bpref.
+2. **Aliases favour dense most:** dense barely changes (−0.06) when an entity is renamed (veklury, hcq, decadron), while BM25 loses −0.37. This is also the largest judged-only advantage (+0.19).
+3. **Entity descriptions hurt every system most** (BM25 −0.55, dense −0.39). Indicative only (n = 7).
+4. **No surface feature significantly predicts the dense advantage.** The kind of change matters more than overlap, IDF or length.
+
+Caveat: the two rewrites of a topic are not independent observations; the tests treat the 100 rewrites as exchangeable.
+
+Outputs: `results/trec_covid/rq3_by_phenomenon_*.csv`, `results/trec_covid/rq3_features_*.csv`. Command: `python -m src.robustness --dataset trec_covid [--measure ...]`.
+
 ## 4. Pending work
 See `docs/ROADMAP.md` for the full plan.
 
@@ -258,6 +287,6 @@ See `docs/ROADMAP.md` for the full plan.
 |---|---|---|
 | A9 | NevIR (RQ4) | BM25, E5, cross-encoder reference |
 | A10 | Error-analysis tool | Top-10 inspection with labels |
-| B2 | RQ2/RQ3 analysis | Per-phenomenon and overlap-level breakdown, feature regression (rewrite features → BM25-vs-dense advantage), ranking stability |
+| B2 | RQ3 in depth | Per-topic failure examples, ranking stability (top-10 overlap between original and rewrite) |
 | B3 | RQ5 complementarity | Relevant documents unique to each system, oracle union recall, why RRF loses its advantage on rewrites |
 | B4 | Report | Figures, final report, presentation and demo |

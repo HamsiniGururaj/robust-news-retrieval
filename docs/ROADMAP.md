@@ -84,7 +84,7 @@ How we build the code for *Robust Retrieval Under Vocabulary Mismatch*, step by 
 | A10 | **Error-analysis tool**: top-10 results with labels, plus relevant docs each system missed |
 | A11 | **Variant tooling**: validate the rewrite CSV; overlap, IDF, length, number and entity features. ✅ done; 100 rewrites finished 21 Oct |
 | B1 | Runs on rewrite sets A and B ✅ 21 Oct; first RQ2 results in PROGRESS §3.7 |
-| B2 | **RQ2/RQ3**: change in nDCG@10 from original to rewrite, CIs, worst-case drops, breakdown by phenomenon and overlap bin, feature regression, ranking stability |
+| B2 | **RQ2/RQ3**: ✅ first results (PROGRESS §3.7, §3.8; `src/robustness.py`). Remaining: per-topic failure examples, ranking stability |
 | B3 | **RQ5**: complementarity (relevant docs found by only one system, oracle union recall, RRF gain on worst topics) |
 | B4 | Error analysis, figures, final report, presentation and demo |
 
